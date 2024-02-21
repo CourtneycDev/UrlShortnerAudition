@@ -2,8 +2,7 @@
 {
     public interface IShortenUrlRepository
     {
-        void SaveShortenedUrl(string longUrl, string token);
-        string GetLongUrl(string token);
-        bool IsUniqueToken(string token);
+        int SaveShortenedUrl(string longUrl);
+        string GetLongUrl(int id);
     }
 }

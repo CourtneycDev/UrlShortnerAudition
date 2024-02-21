@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -46,11 +52,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\ShortenedUrlDAL.cs" />
+    <Compile Include="PayrocUrlShortner.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayrocUrlShortner.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PayrocUrlShortner.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayrocUrlShortner.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PayrocUrlShortner.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayrocUrlShortner.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ShortenUrlRepository.cs" />
+    <Compile Include="ShortenedUrl.cs">
+      <DependentUpon>PayrocUrlShortner.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <EntityDeploy Include="PayrocUrlShortner.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PayrocUrlShortner.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="packages.config" />
+    <None Include="PayrocUrlShortner.edmx.diagram">
+      <DependentUpon>PayrocUrlShortner.edmx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -60,6 +91,18 @@
       <Project>{d704c7fd-6079-4374-a8ca-1db32518e941}</Project>
       <Name>DomainTypes</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PayrocUrlShortner.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PayrocUrlShortner.Context.cs</LastGenOutput>
+      <DependentUpon>PayrocUrlShortner.edmx</DependentUpon>
+    </Content>
+    <Content Include="PayrocUrlShortner.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PayrocUrlShortner.edmx</DependentUpon>
+      <LastGenOutput>PayrocUrlShortner.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,7 +7,8 @@ namespace PayrocUrlShortner.Controllers
 {
     public class UrlShortnerController : BaseController
     {
-        public IHttpActionResult Get(string token)
+
+        public IHttpActionResult Get(string id)
         {
             /* 
                 Improvements: Add caching
@@ -16,14 +17,15 @@ namespace PayrocUrlShortner.Controllers
                 Faster + less calls to DB.
              */
 
-            if(token == null)
+            if (id == null ||
+               id == string.Empty)
             {
                 return NotFound();
             }
 
-            string longUrl = UrlShorteningWorker.GetLongUrl(token);
+            string longUrl = UrlShorteningWorker.GetLongUrl(id);
 
-            if(longUrl == string.Empty)
+            if (longUrl == string.Empty)
             {
                 return NotFound();
             }
@@ -38,8 +40,13 @@ namespace PayrocUrlShortner.Controllers
                 return BadRequest("The specified URL is invalid.");
             }
 
-            string token = GetRedirectUrl() + UrlShorteningWorker.GenerateUniqueToken(ClientToDomainMapper.Map(request));
-            return Ok(token);
+            if (!IsValidDomain(request.Url))
+            {
+                return BadRequest("The specified URL must be from an external domain.");
+            }
+
+            string id = UrlShorteningWorker.SaveLongUrl(ClientToDomainMapper.Map(request));
+            return Created(GetLocationUrl(), id);
         }
     }
 }

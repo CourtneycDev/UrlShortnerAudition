@@ -1,5 +1,4 @@
-﻿using DAL.DataAccess;
-using DomainTypes.Contracts.Repositories;
+﻿using DomainTypes.Contracts.Repositories;
 
 namespace DAL.Repositories
 {
@@ -7,19 +6,14 @@ namespace DAL.Repositories
     {
         private ShortenedUrlDAL shortenedUrlDAL = new ShortenedUrlDAL();
 
-        public string GetLongUrl(string token)
+        public string GetLongUrl(int id)
         {
-            return shortenedUrlDAL.GetLongUrl(token);
+            return shortenedUrlDAL.GetLongUrl(id);
         }
 
-        public bool IsUniqueToken(string token)
+        public int SaveShortenedUrl(string longUrl)
         {
-            return shortenedUrlDAL.IsUniqueToken(token);
-        }
-
-        public void SaveShortenedUrl(string longUrl, string token)
-        {
-            shortenedUrlDAL.SaveShortenedUrl(longUrl, token);
+            return shortenedUrlDAL.SaveShortenedUrl(longUrl);
         }
     }
 }

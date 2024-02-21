@@ -1,73 +1,35 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Linq;
 
-namespace DAL.DataAccess
+namespace DAL
 {
-    /* 
-        Basic DAL using SqlCommands just to get things going as quickly/simply as possible.
-    */
     public class ShortenedUrlDAL
     {
-        /* Improvements: Connection string must be in the config file. */
-        string connectionString = "Data Source=DESKTOP-ODH78VQ\\SQLEXPRESS;Initial Catalog=PayrocUrlShortner;Integrated Security=True;";
-
         /* Improvements: Error handling incase DB communication fails for whatever reason. */
-        public void SaveShortenedUrl(string longUrl, string token)
+        public int SaveShortenedUrl(string longUrl)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (PayrocUrlShortnerEntities dbContext = new PayrocUrlShortnerEntities())
             {
-                string query = "INSERT INTO dbo.ShortenedUrl (LongUrl,Token,DateCreated) VALUES (@longUrl, @token, @dateCreated)";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                ShortenedUrl shortenedUrl = new ShortenedUrl()
                 {
-                    command.Parameters.AddWithValue("@longUrl", longUrl);
-                    command.Parameters.AddWithValue("@token", token);
-                    command.Parameters.AddWithValue("@dateCreated", DateTime.Now);
+                    LongUrl = longUrl,
+                    DateCreated = DateTime.Now,
+                };
 
-                    connection.Open();
-                    int result = command.ExecuteNonQuery();
-                }
+                dbContext.ShortenedUrls.Add(shortenedUrl);
+                dbContext.SaveChanges();
+                return shortenedUrl.ID;
             }
         }
 
-        public string GetLongUrl(string token)
+        public string GetLongUrl(int id)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (PayrocUrlShortnerEntities dbContext = new PayrocUrlShortnerEntities())
             {
-                string queryString = $"SELECT * FROM dbo.ShortenedUrl WHERE Token = '{token}'";
+                ShortenedUrl record = (from s in dbContext.ShortenedUrls
+                                       select s).Where(t => t.ID == id).FirstOrDefault();
 
-                using (SqlCommand command = new SqlCommand(queryString, connection))
-                {
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return reader["LongUrl"].ToString();
-                        }
-                        else
-                        {
-                            return string.Empty;
-                        }
-                    }
-                }
-            }
-        }
-
-        public bool IsUniqueToken(string token)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                string queryString = $"SELECT * FROM dbo.ShortenedUrl WHERE Token = '{token}'";
-
-                using (SqlCommand command = new SqlCommand(queryString, connection))
-                {
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        return !reader.HasRows;
-                    }
-                }
+                return record != null ? record.LongUrl : string.Empty;
             }
         }
     }

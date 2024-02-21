@@ -4,7 +4,7 @@ namespace DomainTypes.Contracts.Workers
 {
     public interface IUrlShorteningWorker
     {
-        string GenerateUniqueToken(ShortenUrlRequest request);
-        string GetLongUrl(string token);
+        string SaveLongUrl(ShortenUrlRequest request);
+        string GetLongUrl(string encodedId);
     }
 }
